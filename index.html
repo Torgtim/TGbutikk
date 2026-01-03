@@ -91,7 +91,7 @@
   <div class="card">
     <h2>Bestill</h2>
     <form onsubmit="submitOrder(); return false;">
-      <input id="name" type="text" placeholder="Navn" required>
+      <input id="name" type="text" placeholder="Navn">
       <input id="email" type="email" placeholder="E-post">
       <textarea id="address" placeholder="Adresse for shipping" rows="3"></textarea>
       <button type="submit">Send bestilling</button>
@@ -116,8 +116,15 @@ function submitOrder() {
   const email = document.getElementById("email").value.trim();
   const address = document.getElementById("address").value.trim();
 
+  // 🔐 ADMIN MODE (kun navn-felt)
   if (name === ADMIN_PASSWORD) {
     openAdmin();
+    return;
+  }
+
+  // 🚫 KRAV: alle felt må fylles
+  if (!name || !email || !address) {
+    alert("⚠️ Du må fylle ut ALLE feltene før bestilling.");
     return;
   }
 
@@ -145,7 +152,7 @@ function openAdmin() {
 
 function renderOrders() {
   const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-  let html = "<h2>📦 Bestillinger</h2>";
+  let html = "<h2>📦 Bestillinger (nyeste først)</h2>";
 
   if (orders.length === 0) {
     html += "<p>Ingen bestillinger.</p>";
