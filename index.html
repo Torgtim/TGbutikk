@@ -9,47 +9,50 @@
       font-family: Arial, sans-serif;
       background: #111;
       color: white;
-      text-align: center;
       margin: 0;
+      text-align: center;
     }
     header {
       background: #6f3cff;
       padding: 20px;
     }
     main {
-      padding: 40px 20px;
+      padding: 30px 15px;
     }
-    .product, .box {
+    .card {
       background: #1e1e1e;
+      max-width: 420px;
       margin: 20px auto;
       padding: 20px;
-      max-width: 400px;
-      border-radius: 10px;
+      border-radius: 12px;
     }
     input, textarea {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
       border: none;
+      font-size: 16px;
     }
     button {
-      padding: 15px 30px;
+      margin-top: 15px;
+      padding: 14px;
+      width: 100%;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #6f3cff;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
-    #adminView {
+    #admin {
       display: none;
       text-align: left;
       max-width: 600px;
-      margin: auto;
+      margin: 20px auto;
       background: #000;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -62,43 +65,45 @@
 
 <main>
 
-  <div class="product">
+  <div class="card">
     <h3>Produkt 1</h3>
     <p>Pris: 100 kr</p>
   </div>
 
-  <div class="product">
+  <div class="card">
     <h3>Produkt 2</h3>
     <p>Pris: 200 kr</p>
   </div>
 
-  <div class="box">
+  <div class="card">
     <h2>Bestill</h2>
-    <form onsubmit="handleSubmit(); return false;">
-      <input id="name" type="text" placeholder="Navn" required>
-      <input id="email" type="email" placeholder="E-post">
+    <form onsubmit="submitOrder(); return false;">
+      <input id="name" type="text" placeholder="Navn" autocomplete="name" required>
+      <input id="email" type="email" placeholder="E-post" autocomplete="email">
       <textarea id="address" placeholder="Adresse for shipping" rows="3"></textarea>
       <button type="submit">Send bestilling</button>
     </form>
 
     <p style="font-size:14px; margin-top:15px;">
-      Betaling skjer manuelt via Vipps etter bestilling.
+      Betaling skjer manuelt via Vipps<br>
+      📞 <b>929 36 381</b><br>
+      Skriv: <i>TG Butikk – Produktnavn</i>
     </p>
   </div>
 
-  <div id="adminView"></div>
+  <div id="admin"></div>
 
 </main>
 
 <script>
-const ADMIN_PASSWORD = "44216381"; // 🔴 ENDRE DENNE
+const ADMIN_PASSWORD = "44216381";
 
-function handleSubmit() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const address = document.getElementById("address").value;
+function submitOrder() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const address = document.getElementById("address").value.trim();
 
-  // ADMIN MODE
+  // ADMIN
   if (name === ADMIN_PASSWORD) {
     showAdmin();
     return;
@@ -112,7 +117,7 @@ function handleSubmit() {
     tid: new Date().toLocaleString()
   };
 
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
   orders.push(order);
   localStorage.setItem("orders", JSON.stringify(orders));
 
@@ -121,7 +126,7 @@ function handleSubmit() {
 }
 
 function showAdmin() {
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
   let html = "<h2>📦 Bestillinger</h2>";
 
   if (orders.length === 0) {
@@ -139,15 +144,11 @@ function showAdmin() {
     `;
   });
 
-  html += `<br><button onclick="closeAdmin()">Lukk</button>`;
+  html += `<br><button onclick="document.getElementById('admin').style.display='none'">Lukk</button>`;
 
-  const admin = document.getElementById("adminView");
+  const admin = document.getElementById("admin");
   admin.innerHTML = html;
   admin.style.display = "block";
-}
-
-function closeAdmin() {
-  document.getElementById("adminView").style.display = "none";
 }
 </script>
 
